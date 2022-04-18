@@ -1,0 +1,40 @@
+@import url(__body/modal__body.css);
+@import url(__body/_type/modal__body_type_preview.css);
+@import url(__caption/modal__caption.css);
+@import url(__close-btn/modal__close-btn.css);
+@import url(__close-btn/_type/modal__close-btn_type_info.css);
+@import url(__close-btn/_type/modal__close-btn_type_preview.css);
+@import url(__form/modal__form.css);
+@import url(__image/modal__image.css);
+@import url(__input/modal__input.css);
+@import url(__input/_type/modal__input_type_error.css);
+@import url(__input-error/modal__input-error.css);
+@import url(__save/modal__save.css);
+@import url(__save/_inactive/modal__save_inactive.css);
+@import url(__title/modal__title.css);
+
+
+.modal {
+  display: flex;
+  position: fixed;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 98754321;
+  background-color: rgba(0, 0, 0, .5);
+  transition: visibility 0.2s, opacity 0.2s linear;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 659px) {
+  .modal {
+    justify-content: flex-start;
+  }
+}

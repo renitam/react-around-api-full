@@ -1,0 +1,8 @@
+.card__info-wrapper {
+  margin: 0;
+  width: calc(100% - 36px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}

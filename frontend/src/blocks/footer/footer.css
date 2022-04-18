@@ -1,0 +1,14 @@
+@import url(__copyright/footer__copyright.css);
+
+.footer {
+  padding: 68px 15.625% 60px;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+}
+
+@media screen and (max-width: 1023px) {
+  .footer {
+    padding: 50px 5.9375% 36px;
+  }
+}

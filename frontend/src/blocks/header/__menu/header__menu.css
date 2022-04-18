@@ -1,0 +1,12 @@
+.header__menu {
+  display: flex;
+  align-self: flex-end;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .header__menu {
+    padding: 28px 0 32px;
+    margin: 0 8.4375% 0 0;
+  }
+}

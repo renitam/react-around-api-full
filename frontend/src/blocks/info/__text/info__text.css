@@ -1,0 +1,13 @@
+.info__text {
+  max-width: 244px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  color: #000000;
+  margin: 0 auto;
+  padding: 40px 0 50px;
+
+}

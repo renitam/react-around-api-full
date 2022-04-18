@@ -1,0 +1,8 @@
+@media screen and (max-width: 659px) {
+  .modal__close-btn_type_preview {
+    width: 30px;
+    height: 30px;
+    right: -30px;
+    top: -30px;
+  }
+}

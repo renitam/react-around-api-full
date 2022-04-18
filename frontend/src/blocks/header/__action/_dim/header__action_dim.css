@@ -1,0 +1,10 @@
+.header__action_dim {
+  color: #a9a9a9;
+  text-decoration: none;
+  opacity: 1;
+  transition: linear 0.25s opacity;
+}
+
+.header__action_dim:hover {
+  opacity: 0.75;
+}

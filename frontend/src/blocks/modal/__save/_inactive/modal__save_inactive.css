@@ -1,0 +1,11 @@
+.modal__save_inactive {
+  opacity: 0.2;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+}
+
+.modal__save_inactive:hover {
+  opacity: 0.2;
+  cursor: unset;
+}

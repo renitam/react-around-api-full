@@ -1,0 +1,26 @@
+.header__hamburger {
+  width: 24px;
+  height: 22px;
+  margin: 0;
+  background-color: #000000;
+  background-image: url(../../../images/hamburger.svg);
+}
+
+.header__close {
+  width: 24px;
+  height: 24px;
+  background-color: #000000;
+  background-image: url(../../../images/close_hamburger.svg);
+}
+
+@media (min-width: 769px) {
+  .header__hamburger {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .header__hamburger {
+    margin: 2px 0 0;
+  }
+}

@@ -1,0 +1,8 @@
+@import url(__image/info__image.css);
+@import url(__text/info__text.css);
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

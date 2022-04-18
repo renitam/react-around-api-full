@@ -1,0 +1,39 @@
+@import url(__action/header__action.css);
+@import url(__action/_dim/header__action_dim.css);
+@import url(__action/_hide/header__action_hide.css);
+@import url(__action/_login/header__action_login.css);
+@import url(__action/_mobile/header__action_mobile.css);
+@import url(__email/header__email.css);
+@import url(__email/_mobile/header__email_mobile.css);
+@import url(__hamburger/header__hamburger.css);
+@import url(__hamburger/_hide/header__hamburger_hide.css);
+@import url(__logo/header__logo.css);
+@import url(__menu/header__menu.css);
+@import url(__menu/_hide/header__menu_hide.css);
+@import url(__mobile/header__mobile.css);
+@import url(__mobile/_hide/header__mobile_hide.css);
+
+.header {
+  margin: 0 15.625%;
+  padding: 45px 0 41px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+@media screen and (max-width: 1023px) {
+  .header {
+    flex-wrap: nowrap;
+    max-width: 886px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    margin: 0 auto;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+}

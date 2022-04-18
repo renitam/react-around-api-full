@@ -1,0 +1,17 @@
+.auth__footer {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-decoration: none;
+  /* identical to box height */
+
+  text-align: center;
+  color: #ffffff;
+  margin: 15px 0 0 0;
+}
+
+.auth__footer:active {
+  color: #ffffff;
+}

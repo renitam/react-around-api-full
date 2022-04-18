@@ -1,0 +1,28 @@
+.modal__input {
+  margin: 54px 36px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .2);
+  font-size: 14px;
+  line-height: 17px;
+  vertical-align: top;
+  padding-bottom: 13px;
+}
+
+.modal__input:last-of-type {
+  margin: 30px 36px 0;
+}
+
+.modal__input:focus {
+  outline: none;
+}
+
+@media screen and (max-width: 659px) {
+  .modal__input {
+    margin: 76px 22px 0;
+    padding-bottom: 9px;
+  }
+
+  .modal__input:last-of-type {
+    margin: 30px 22px 0;
+  }
+}

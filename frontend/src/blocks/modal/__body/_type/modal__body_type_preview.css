@@ -1,0 +1,7 @@
+.modal__body_type_preview {
+  margin: 0 minmax(40px, auto);
+  min-width: unset;
+  max-width: 75vw;
+  max-height: 75vh;
+  background-color: transparent;
+}

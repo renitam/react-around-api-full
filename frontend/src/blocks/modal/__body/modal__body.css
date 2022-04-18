@@ -1,0 +1,16 @@
+.modal__body {
+  position: relative;
+  margin: 0;
+  padding: 0 auto;
+  min-width: 430px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 659px) {
+  .modal__body {
+    margin: 130px 5.9375% 0;
+    min-width: 282px;
+    align-self: center;
+  }
+}

@@ -1,0 +1,27 @@
+.modal__save {
+  margin: 46px 36px 36px;
+  padding: 16px 125px;
+  box-sizing: border-box;
+  background-color: #000;
+  font-size: 18px;
+  line-height: 22px;
+  color: #fff;
+  opacity: 1;
+  transition: linear 0.2s opacity;
+  border: none;
+  border-radius: 2px;
+}
+
+.modal__save:hover {
+  opacity: 0.8;
+  cursor: url(../../../images/hover.png), pointer;
+}
+
+@media screen and (max-width: 659px) {
+  .modal__save {
+    margin: 46px 22px 25px;
+    padding: 14px 100px;
+    font-size: 14px;
+    line-height: 1;
+  }
+}

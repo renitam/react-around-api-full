@@ -1,0 +1,12 @@
+.link {
+  transition: linear opacity 0.2s;
+  opacity: 1;
+  text-decoration: none;
+  color: #fff;
+  z-index: 1;
+}
+
+.link:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}

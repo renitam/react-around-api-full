@@ -1,0 +1,18 @@
+@import url(__eye/auth__eye.css);
+@import url(__footer/auth__footer.css);
+@import url(__form/auth__form.css);
+@import url(__input-error/auth__input-error.css);
+@import url(__input/auth__input.css);
+@import url(__save/auth__save.css);
+@import url(__title/auth__title.css);
+
+.auth {
+  padding: 60px 15.625% 150px;
+}
+
+@media (max-width: 767px) {
+  .auth {
+    padding: 40px 0 100px;
+    margin: 0 auto;
+  }
+}
