@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   // email, string from 3 256, required field
@@ -21,6 +22,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     maxlength: 16,
+    select: false,
   },
 
   // username, string from 2 to 30 characters, optional field
@@ -44,7 +46,7 @@ const userSchema = new mongoose.Schema({
   // link to the avatar, string, optional field
   avatar: {
     type: String,
-    default: 'https://www.hollywoodreporter.com/wp-content/uploads/2019/03/avatar-publicity_still-h_2019.jpg?w=1024',
+    default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     required: false,
     validate: {
       validator: (link) => /(http|https):\/\/(w{3})?[\w\d._\-~:/?%#[\]@!$&'()*+,;=]+\.[\w\d]{1,}([\w\d._\-~:/?%#[\]@!$&'()*+,;=]+\/)*#?/.test(link),
@@ -52,5 +54,30 @@ const userSchema = new mongoose.Schema({
     },
   },
 });
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials (email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      // If email doesn't match,
+      if (!user) {
+        return Promise.reject(new Error('Incorrect email or password'));
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          // or if the password doesn't match, send ambiguous error.
+          if (!matched) {
+            return Promise.reject(new Error('Incorrect email or password'));
+          }
+        // Otherwise return user object
+        return user
+      })
+    });
+};
+
+userSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
 
 module.exports = mongoose.model('user', userSchema);

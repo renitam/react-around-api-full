@@ -8,3 +8,15 @@ module.exports.serverError = (res, err) => {
     res.status(500).send({ message: `An error has occurred on the server. ${err}` });
   }
 };
+
+module.exports.authError = (res, err) => {
+  res.status(403).send({ message: `Authorization required. ${err}` });
+};
+
+const ForbiddenError = (message) => {
+  
+}
+
+const NotFoundError = (messages) => {
+
+}

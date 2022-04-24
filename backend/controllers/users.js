@@ -1,13 +1,21 @@
 const User = require('../models/user');
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-// Define and import helper functions
-const { serverError } = require('../utils/utils');
+// Define and import helper functions/constants
+const { JWT_SECRET } = require('../utils/config');
+const { serverError } = require('../utils/errors');
+
+const UnauthorizedError = require('../errors/unauthorized-err');
+const BadRequestError = require('../errors/bad-request-err');
+const NotFoundError = require('../errors/not-found-err');
+const ServerError = require('../errors/server-err');
+
 const sendUser = (res, user) => res.send({ data: user });
 
-const createUser = (req, res) => {
+// POST /signup
+const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
-
   bcrypt.hash(password, 10)
     .then(hash => User.create({ 
       name, 
@@ -16,11 +24,7 @@ const createUser = (req, res) => {
       email, 
       password: hash 
     }))
-    .orFail(() => {
-      const error = new Error('Failed to create user. Check for duplicates and try again.');
-      error.name = 'CastError';
-      throw error;
-    })
+    .orFail(() => next(new BadRequestError('Failed to create user. Check for duplicates and try again')))
     .then((user) => { 
       res.status(201).send({
         data: {
@@ -29,72 +33,52 @@ const createUser = (req, res) => {
         }
       })
     })
-    .catch((err) => serverError(res, err))
+    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };
 
-const getUsers = (req, res) => {
-  User.find({})
-    .orFail(() => {
-      const error = new Error('No users available');
-      error.name = 'ResourceError';
-      throw error;
+// POST /signin
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id }, 
+        JWT_SECRET,
+        { expiresIn: '7d' },
+      );
+      res.send({ data: user.toJSON(), token });
     })
+    .catch((err) => next(new UnauthorizedError(`Incorrect email or password: ${err}`)));
+}
+
+// GET /users
+const getUsers = (req, res, next) => {
+  User.find({})
+    .orFail(() => next(new NotFoundError('No users available')))
     .then((user) => sendUser(res, user))
-    .catch((err) => serverError(res, err));
+    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };
 
 const getProfile = (req, res) => {
-  User.findById(req.params.id)
-    .orFail(() => {
-      const error = new Error(`No user found with this id: '${req.params.id}'`);
-      error.name = 'ResourceError';
-      throw error;
-    })
+  User.findById(req.params._id)
+    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.params.id}'`)))
     .then((user) => sendUser(res, user))
-    .catch((err) => serverError(res, err));
+    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };
-
-const login = (req, res) => {
-  const { email, password } = req.body;
-
-  User.findOne({ email })
-    .then((user) => {
-      // If email doesn't match, send ambiguous error.
-      if (!user) {
-        return Promise.reject(new Error('Incorrect email or password'));
-      }
-
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      // If the password doesn't match, send ambiguous error.
-      if (!matched) {
-        return Promise.reject(new Error('Incorrect email or password'));
-      }
-    })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    })
-}
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-
   User.findByIdAndUpdate(
-    req.params.id,
+    req.params._id,
     { avatar },
     {
       new: true,
       runValidators: true,
     },
   )
-    .orFail(() => {
-      const error = new Error(`No user found with this id: '${req.params.id}'`);
-      error.name = 'ResourceError';
-      throw error;
-    })
+    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.params._id}'`)))
     .then((user) => sendUser(res, user))
-    .catch((err) => serverError(res, err));
+    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };
 
 const updateProfile = (req, res) => {
@@ -108,13 +92,9 @@ const updateProfile = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(() => {
-      const error = new Error(`No user found with this id: '${req.params.id}'`);
-      error.name = 'ResourceError';
-      throw error;
-    })
+    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.params._id}'`)))
     .then((user) => sendUser(res, user))
-    .catch((err) => serverError(res, err));
+    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };
 
 module.exports = {  
