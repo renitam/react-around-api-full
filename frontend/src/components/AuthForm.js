@@ -10,23 +10,23 @@ const Flow = (props) => {
     footerPath 
   } = props
   
-  const [email, setEmail] = React.useState(initialEmail)
-  const [password, setPassword] = React.useState('')
+  const email = React.useRef(initialEmail)
+  const password = React.useRef('')
   const [hide, setHide] = React.useState(true)
   const [icon, setIcon] = React.useState('fa-solid fa-eye')
 
-  function handleChange(e) {
-    const { name, value } = e.target
-    name === "email" ? setEmail(value) : setPassword(value)
-  }
+  // function handleChange(e) {
+  //   const { name, value } = e.target
+  //   name === "email" ? setEmail(value) : setPassword(value)
+  // }
 
+  // Send email + password to onLogin / onRegister
   function handleSubmit(e) {
-    // Prevent the browser from navigating to the form address
     e.preventDefault()
-    // Pass the values of the managed components to the external handler
-    onSubmit(email, password)
+    onSubmit(email.current.value, password.current.value)
   } 
 
+  // Toggle password input 
   function handleEye() {
     setHide(!hide)
     if (icon === 'fa-solid fa-eye') {
@@ -35,7 +35,6 @@ const Flow = (props) => {
       setIcon('fa-solid fa-eye')
     }
   }
-
 
   return (
     <main className='auth'>
@@ -46,8 +45,7 @@ const Flow = (props) => {
           name='email'
           id='email'
           placeholder='Email'
-          value={email}
-          onChange={handleChange}
+          ref={email}
           className='auth__input'
           minLength='3'
           maxLength='256'
@@ -59,8 +57,7 @@ const Flow = (props) => {
           name='password'
           id='password'
           placeholder='Password'
-          value={password}
-          onChange={handleChange}
+          ref={password}
           className='auth__input'
           minLength='8'
           maxLength='16'
