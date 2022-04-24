@@ -4,6 +4,7 @@ const UnauthorizedError = require('../errors/unauthorized-err');
 
 module.exports = (res, req, next) => {
   // get bearer token from header
+  // console.log('Headers: ', req.headers);
   const { authorization } = req.headers;
 
   // make sure the header exists and has valid token
@@ -19,7 +20,7 @@ module.exports = (res, req, next) => {
   } catch (err) {
     return next(UnauthorizedError('Authorization Required'));
   }
-  
+
   // assign payload w/ _id to req object to send to next middleware
   req.user = payload;
   next();

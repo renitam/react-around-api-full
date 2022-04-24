@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 // Define and import helper functions/constants
 const { JWT_SECRET } = require('../utils/config');
-const { serverError } = require('../utils/errors');
 
 const UnauthorizedError = require('../errors/unauthorized-err');
 const BadRequestError = require('../errors/bad-request-err');
@@ -15,25 +14,30 @@ const sendUser = (res, user) => res.send({ data: user });
 
 // POST /signup
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
-  bcrypt.hash(password, 10)
-    .then(hash => User.create({ 
-      name, 
-      about, 
-      avatar, 
+  const { email, password } = req.body;
+
+  // First, check to make sure email is unique
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new BadRequestError('Failed to create user. Check email and password, then try again.');
+      } else {
+        return bcrypt.hash(password, 10)
+      }
+    })
+    .then((hash) => User.create({ 
       email, 
       password: hash 
     }))
-    .orFail(() => next(new BadRequestError('Failed to create user. Check for duplicates and try again')))
     .then((user) => { 
       res.status(201).send({
         data: {
         _id: user._id,
         email: user.email,
         }
-      })
+      })  
     })
-    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
+    .catch(next);
 };
 
 // POST /signin
@@ -46,9 +50,9 @@ const login = (req, res) => {
         JWT_SECRET,
         { expiresIn: '7d' },
       );
-      res.send({ data: user.toJSON(), token });
+      res.send({ data: user.removePass(), token });
     })
-    .catch((err) => next(new UnauthorizedError(`Incorrect email or password: ${err}`)));
+    .catch(next);
 }
 
 // GET /users

@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
-    maxlength: 16,
     select: false,
   },
 
@@ -74,7 +73,8 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials (email
     });
 };
 
-userSchema.methods.toJSON = function () {
+// Define removePass method to remove password before turning obj
+userSchema.methods.removePass = function () {
   const obj = this.toObject();
   delete obj.password;
   return obj;

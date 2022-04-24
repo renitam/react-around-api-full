@@ -1,3 +1,5 @@
+// Deprecated
+
 module.exports.serverError = (res, err) => {
   if (err.name === 'CastError' || err.name === 'ValidationError') {
     // Needs a db id numerical 24 characters
@@ -12,11 +14,3 @@ module.exports.serverError = (res, err) => {
 module.exports.authError = (res, err) => {
   res.status(403).send({ message: `Authorization required. ${err}` });
 };
-
-const ForbiddenError = (message) => {
-  
-}
-
-const NotFoundError = (messages) => {
-
-}

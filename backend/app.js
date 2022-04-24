@@ -30,9 +30,9 @@ app.use(auth);
 // define user & card route middleware
 app.use(routes);
 
+// Handle all errors here
 app.use((err, req, res, next) => {
-  res.status(500).send({ message: err.message });
-  next(err);
+  res.status(err.statusCode || 500).send({ message: err.message || 'An error occurred on the server.'});
 });
 
 // set listener for app API
