@@ -1,12 +1,18 @@
 class Api {
-  constructor(options) {
-    this._baseUrl = options.baseUrl
-    this._authToken = options.authToken
-    this._contentType = options.contentType
+  constructor() {
+    this._baseUrl = 'http://localhost:3000'
+    this._authToken = `Bearer ${localStorage.getItem('token')}`
+    this._contentType = 'application/json'
+    this._headers = {
+      'Authorization': this._authToken,
+      'Content-Type': this._contentType,
+    }
   }
 
   updateAuthToken(token) {
-    this._authToken = token
+    console.log(token, this._authToken)
+    this._authToken = `Bearer ${token}`
+    console.log(token, this._authToken)
   }
 
   _checkServerCode(res) {
@@ -20,21 +26,16 @@ class Api {
   // 1 Load user info from server
   getProfileInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
       .then(res => this._checkServerCode(res))
   }
 
   // 2 Load cards from server
   getCards() {
+    console.log(this._headers)
     return fetch(`${this._baseUrl}/cards`, {
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
       .then(res => this._checkServerCode(res))
   }
@@ -43,10 +44,7 @@ class Api {
   saveProfile({ name, about }) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         name: name,
         about: about
@@ -59,10 +57,7 @@ class Api {
   saveAvatar(link) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         avatar: link
       })
@@ -74,10 +69,7 @@ class Api {
   addCard({ name, link }) {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         name: name,
         link: link
@@ -90,10 +82,7 @@ class Api {
   trashCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: this._authToken,
-      'Content-Type': this._contentType,
-      }
+      headers: this._headers,
     })
       .then(res => this._checkServerCode(res))
   }
@@ -102,10 +91,7 @@ class Api {
   addLike(cardId) {
     return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
       method: 'PUT',
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers,
     })
       .then(res => this._checkServerCode(res))
   }
@@ -114,10 +100,7 @@ class Api {
   removeLike(cardId) {
     return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: this._authToken,
-        'Content-Type': this._contentType,
-      }
+      headers: this._headers,
     })
       .then(res => this._checkServerCode(res))
   }
@@ -132,6 +115,6 @@ class Api {
   }
 }
 
-const api = new Api({baseUrl: 'http://api.renita.students.nomoreparties.sbs/', authToken: `Bearer ${localStorage.getItem}`, contentType: 'application/json'})
+const api = new Api()
 
 export default api

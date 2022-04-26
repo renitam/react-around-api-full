@@ -61,10 +61,7 @@ function App() {
   // Check token upon loading page any page
   React.useEffect(() => {
     const token = localStorage.getItem('token')
-    if (token) {
-      // fix for dependecy warning: https://typeofnan.dev/you-probably-shouldnt-ignore-react-hooks-exhaustive-deps-warnings/
-      handleToken(token)
-    }
+    handleToken(token)
   }, [])
 
   function loadApp() {
@@ -76,6 +73,7 @@ function App() {
   function onLogin(email, password) {
     auth.login(email, password)
       .then(res => {
+        // response returns data: _id, email; and token
         const token = res.token
         localStorage.setItem('token', token)
         handleToken(token)

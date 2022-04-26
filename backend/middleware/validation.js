@@ -102,11 +102,11 @@ const validateCardId = celebrate({
 });
 
 const validateHeader = celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().required().messages({
+  headers: {
+    'Authorization': Joi.string().required().messages({
       'string.empty': 'Authorization required',
     }),
-  }).unknown(true),
+  },
 });
 
 module.exports = {

@@ -43,6 +43,7 @@ const createUser = (req, res, next) => {
 
 // POST /signin
 const login = (req, res, next) => {
+  console.log(req)
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {

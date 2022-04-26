@@ -27,8 +27,8 @@ mongoose.connect(DB_ADDRESS);
 app.use(cors());
 app.options('*', cors());
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Server crash testing for code reviewer
 app.get('/crash-test', () => {
@@ -43,7 +43,7 @@ app.use(requestLogger); // enable request logger
 app.post('/signup', validateUser, createUser);
 app.post('/signin', validateLogin, login);
 
-// protect remaining routes & define user._id for authorized user
+// protect remaining routes & define user._id for authorized users
 app.use(validateHeader, auth);
 app.use(routes); // define user & card route middleware
 

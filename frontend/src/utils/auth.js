@@ -1,5 +1,5 @@
 // Register user and return email and owner ID
-const baseUrl= 'https://register.nomoreparties.co' 
+const baseUrl= 'http://localhost:3000' 
 
 function checkServerCode(res) {
   if (res.ok) {
@@ -25,7 +25,7 @@ export const login = (email, password) => {
   return fetch(`${baseUrl}/signin`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password })
   })
