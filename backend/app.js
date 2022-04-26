@@ -1,11 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
+const cors = require('cors');
 
+// Pull in middleware and constants
 const routes = require('./routes/routes');
-const auth = require('./middleware/auth');
 const { createUser, login } = require('./controllers/users');
+const { validateUser, validateLogin, validateHeader } = require('./middleware/validation');
+const auth = require('./middleware/auth');
+const { requestLogger, errorLogger } = require('./middleware/logger');
+
 const { DB_ADDRESS } = require('./utils/config');
+const ServerError = require('./errors/server-err');
 
 // set port to 3000
 const { PORT = 3000 } = process.env;
@@ -17,22 +24,41 @@ const app = express();
 // include options to prevent app from crashing
 mongoose.connect(DB_ADDRESS);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.options('*', cors());
+
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+
+// Server crash testing for code reviewer
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
+
+app.use(requestLogger); // enable request logger
 
 // define sign in and login routes
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signup', validateUser, createUser);
+app.post('/signin', validateLogin, login);
 
 // protect remaining routes & define user._id for authorized user
-app.use(auth);
+app.use(validateHeader, auth);
+app.use(routes); // define user & card route middleware
 
-// define user & card route middleware
-app.use(routes);
+app.use(errorLogger); // enable error logger
 
-// Handle all errors here
+app.use(errors()); // error handlers for celebrate
+
+// api generated errors
 app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).send({ message: err.message || 'An error occurred on the server.'});
+  if (err.statusCode != 500) {
+    res.status(err.statusCode || 500).send({ message: err.message || `An error occurred on the server: ${err}`});
+  } else {
+    const serverErr = new ServerError(`An error occurred on the server: ${err}`);
+    res.status(serverErr.statusCode).send({ message: serverErr.message});
+  }
 });
 
 // set listener for app API

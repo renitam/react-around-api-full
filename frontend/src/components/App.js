@@ -51,7 +51,8 @@ function App() {
     if (isLoggedIn && window.location.pathname === '/') {
       api.getCards()
         .then( (initialCards) => {
-          setCardList([...initialCards])
+          console.log(initialCards)
+          setCardList([...initialCards.data])
         })
         .catch(err => console.error(`Unable to load cards: ${err}`))
     }
@@ -117,6 +118,8 @@ function App() {
       .then(res => {
         if (res.data.email) {
           setEmail(res.data.email)
+          api.updateAuthToken(token);
+          console.log(token, res.token, res.data.token)
           loadApp()
           return
           // For Project 15, save _id to currentUser context
