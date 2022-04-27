@@ -53,10 +53,7 @@ const login = (req, res, next) => {
         { expiresIn: '7d' },
       );
       res.send({
-        data: {
-          _id: user._id,
-          email: user.email,
-        },
+        data: { _id: user._id },
         token
       });
     })
@@ -71,9 +68,10 @@ const login = (req, res, next) => {
 //     .catch(next);
 // };
 
+// GET /users/me -- retrieves
 const getProfile = (req, res, next) => {
-  User.findById(req.params._id)
-    .orFail(() => new NotFoundError(`No user found with this id: '${req.params.id}'`))
+  User.findById(req.user._id)
+    .orFail(() => new NotFoundError(`No user found with this id: '${req.user.id}'`))
     .then((user) => sendUser(res, user))
     .catch(next);
 };
@@ -81,14 +79,14 @@ const getProfile = (req, res, next) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { avatar },
     {
       new: true,
       runValidators: true,
     },
   )
-    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.params._id}'`)))
+    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.user._id}'`)))
     .then((user) => sendUser(res, user))
     .catch(next);
 };
@@ -97,14 +95,14 @@ const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { name, about },
     {
       new: true,
       runValidators: true,
     },
   )
-    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.params._id}'`)))
+    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.user._id}'`)))
     .then((user) => sendUser(res, user))
     .catch(next);
 };

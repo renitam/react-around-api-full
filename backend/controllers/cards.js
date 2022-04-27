@@ -9,7 +9,7 @@ const sendCard = (res, card) => res.send({ data: card });
 // Send all cards in db
 const getCards = (req, res, next) => {
   Card.find({})
-    .orFail(() => next(new NotFoundError('No cards available')))
+    .orFail(() => new NotFoundError('No cards available'))
     .then((card) => sendCard(res, card))
     .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };

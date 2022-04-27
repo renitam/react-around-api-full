@@ -33,12 +33,15 @@ export const login = (email, password) => {
 }
 
 // Check login token upon visiting page and return id & email for loading page
-export const checkToken = (token) => {
+export const checkToken = (token, id) => {
   return fetch(`${baseUrl}/users/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
+    },
+    params: {
+      _id: id
     }
   })
     .then(res => checkServerCode(res))

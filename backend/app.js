@@ -7,8 +7,7 @@ const cors = require('cors');
 // Pull in middleware and constants
 const routes = require('./routes/routes');
 const { createUser, login } = require('./controllers/users');
-const { validateUser, validateLogin, validateHeader } = require('./middleware/validation');
-const auth = require('./middleware/auth');
+const { validateUser, validateLogin } = require('./middleware/validation');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const { DB_ADDRESS } = require('./utils/config');
@@ -43,8 +42,7 @@ app.use(requestLogger); // enable request logger
 app.post('/signup', validateUser, createUser);
 app.post('/signin', validateLogin, login);
 
-// protect remaining routes & define user._id for authorized users
-app.use(validateHeader, auth);
+// protect remaining routes & define user._id for authorized user
 app.use(routes); // define user & card route middleware
 
 app.use(errorLogger); // enable error logger
@@ -54,7 +52,7 @@ app.use(errors()); // error handlers for celebrate
 // api generated errors
 app.use((err, req, res, next) => {
   if (err.statusCode != 500) {
-    res.status(err.statusCode || 500).send({ message: err.message || `An error occurred on the server: ${err}`});
+    res.status(err.statusCode || 500).send({ message: err || `An error occurred on the server: ${err}`});
   } else {
     const serverErr = new ServerError(`An error occurred on the server: ${err}`);
     res.status(serverErr.statusCode).send({ message: serverErr.message});

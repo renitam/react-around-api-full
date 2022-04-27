@@ -9,10 +9,9 @@ class Api {
     }
   }
 
-  updateAuthToken(token) {
-    console.log(token, this._authToken)
+  updateAuthToken(token, id) {
     this._authToken = `Bearer ${token}`
-    console.log(token, this._authToken)
+    this._id = id
   }
 
   _checkServerCode(res) {
@@ -24,16 +23,19 @@ class Api {
   }
 
   // 1 Load user info from server
-  getProfileInfo() {
+  getProfileInfo(id) {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this._headers
+      method: 'GET',
+      headers: this._headers,
+      params: {
+        _id: id
+      }
     })
       .then(res => this._checkServerCode(res))
   }
 
   // 2 Load cards from server
   getCards() {
-    console.log(this._headers)
     return fetch(`${this._baseUrl}/cards`, {
       headers: this._headers
     })

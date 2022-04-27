@@ -15,7 +15,4 @@ router.patch('/me', validateProfile, updateProfile);
 // PATCH /users/me/avatar - updates avatar url
 router.patch('/me/avatar', validateAvatar, updateAvatar);
 
-// router.get('/', getUsers); Deprecated endpoint from around-express
-
-
 module.exports = router;

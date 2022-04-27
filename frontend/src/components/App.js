@@ -50,18 +50,20 @@ function App() {
   React.useEffect(() => {
     if (isLoggedIn && window.location.pathname === '/') {
       api.getCards()
-        .then( (initialCards) => {
-          console.log(initialCards)
+        .then((initialCards) => {
           setCardList([...initialCards.data])
         })
         .catch(err => console.error(`Unable to load cards: ${err}`))
     }
   }, [isLoggedIn])
 
-  // Check token upon loading page any page
+  // Check token upon loading any page
   React.useEffect(() => {
     const token = localStorage.getItem('token')
-    handleToken(token)
+    if (token) {
+      handleToken()
+    }
+
   }, [])
 
   function loadApp() {
@@ -69,14 +71,41 @@ function App() {
     history.push('/')
   }
 
+  // Check token and log user in if valid
+  function handleToken() {
+    const token = localStorage.getItem('token')
+    if (token) {
+      return auth.checkToken(token, currentUser._id)
+        .then(res => {
+          if (res.data.email) {
+            setEmail(res.data.email)
+            api.updateAuthToken(token, currentUser._id);
+            loadApp()
+            return
+          }
+          return Promise.reject(`Token expired. Please sign in again.`)
+        })
+        .catch(err => {
+          console.error(`An error occurred during authentication: ${err}`)
+          onSignOut()
+        })
+    }
+    return
+  }
+
   // Handle login submit 
   function onLogin(email, password) {
     auth.login(email, password)
       .then(res => {
-        // response returns data: _id, email; and token
+        // response returns data: _id; and token
         const token = res.token
         localStorage.setItem('token', token)
-        handleToken(token)
+        // For Project 15, save _id to currentUser context
+        const userData = currentUser
+        userData._id = res.data._id
+        debugger;
+        setCurrentUser(userData)
+        handleToken()
       })
       .catch(err => console.error(`An error occurred during login: ${err}`))
   }
@@ -107,30 +136,9 @@ function App() {
   function onSignOut() {
     localStorage.removeItem('token')
     setEmail('')
+    setCurrentUser({})
     setIsLoggedIn(false)
     history.push('/signin')
-  }
-
-  function handleToken(token) {
-    auth.checkToken(token)
-      .then(res => {
-        if (res.data.email) {
-          setEmail(res.data.email)
-          api.updateAuthToken(token);
-          console.log(token, res.token, res.data.token)
-          loadApp()
-          return
-          // For Project 15, save _id to currentUser context
-          // const userData = currentUser
-          // userData._id = res.data_id
-          // setCurrentUser(userData)
-        }
-        return Promise.reject(`Token expired. Please sign in again.`)
-      })
-      .catch(err => {
-        console.error(`An error occurred during authentication: ${err}`)
-        onSignOut()
-      })
   }
 
   // Open edit avatar modal

@@ -4,16 +4,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext'
 
 function Main({ onEditAvatarClick, onEditProfileClick, onAddPlaceClick, onCardClick, cards, onCardLike, onCardDelete }) {
 
-  const currentUser = React.useContext(CurrentUserContext) || ''
-  const [userName, setUserName] = React.useState('')
-  const [userAbout, setUserAbout] = React.useState('')
-  const [userAvatar, setUserAvatar] = React.useState('')
-
-  React.useEffect( () => {
-    setUserName(currentUser.name || '')
-    setUserAbout(currentUser.about || '')
-    setUserAvatar(currentUser.avatar || '')
-  }, [currentUser])
+  const currentUser = React.useContext(CurrentUserContext)
 
   return(
     <main>
@@ -21,21 +12,21 @@ function Main({ onEditAvatarClick, onEditProfileClick, onAddPlaceClick, onCardCl
         <div className='profile__content'>
           <div className='profile__avatar-overlay'>
             <img
-              src={userAvatar}
+              src={currentUser.avatar}
               alt='Profile avatar'
               className='profile__avatar'
               onClick={onEditAvatarClick}
             />
           </div>
           <div className='profile__info'>
-            <h1 className='profile__name'>{userName}</h1>
+            <h1 className='profile__name'>{currentUser.name}</h1>
             <button
               type='button'
               className='profile__edit-btn link'
               aria-label='open edit profile menu'
               onClick={onEditProfileClick}
             ></button>
-            <p className='profile__about'>{userAbout}</p>
+            <p className='profile__about'>{currentUser.about}</p>
           </div>
         </div>
         <button type='button' className='profile__add-btn link' onClick={onAddPlaceClick}></button>
