@@ -1,6 +1,6 @@
 class Api {
   constructor() {
-    this._baseUrl = 'http://localhost:3000'
+    this._baseUrl = 'https://api.renita.students.nomoreparties.sbs'
     this._authToken = `Bearer ${localStorage.getItem('token')}`
     this._contentType = 'application/json'
     this._headers = {

@@ -1,5 +1,5 @@
 // Register user and return email and owner ID
-const baseUrl= 'http://localhost:3000' 
+const baseUrl= 'https://api.renita.students.nomoreparties.sbs' 
 
 function checkServerCode(res) {
   if (res.ok) {
