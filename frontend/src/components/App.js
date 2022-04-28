@@ -57,22 +57,13 @@ function App() {
     }
   }, [isLoggedIn])
 
-  // Check token upon loading any page
-  React.useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      handleToken()
-    }
-
-  }, [])
-
   function loadApp() {
     setIsLoggedIn(true)
     history.push('/')
   }
 
   // Check token and log user in if valid
-  function handleToken() {
+  const handleToken = React.useCallback(() => {
     const token = localStorage.getItem('token')
     if (token) {
       return auth.checkToken(token, currentUser._id)
@@ -91,7 +82,12 @@ function App() {
         })
     }
     return
-  }
+  }, [history])
+
+  // Check token upon loading any page
+  React.useEffect(() => {
+    handleToken()
+  }, [handleToken])
 
   // Handle login submit 
   function onLogin(email, password) {
@@ -100,11 +96,6 @@ function App() {
         // response returns data: _id; and token
         const token = res.token
         localStorage.setItem('token', token)
-        // For Project 15, save _id to currentUser context
-        const userData = currentUser
-        userData._id = res.data._id
-        debugger;
-        setCurrentUser(userData)
         handleToken()
       })
       .catch(err => console.error(`An error occurred during login: ${err}`))
@@ -195,6 +186,8 @@ function App() {
   // Send a card like to server, then replace with modified card in card list
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id)
+    console.log(card.first()._id, currentUser)
+    debugger;
 
     api.changeLikeCardStatus(card._id, !isLiked)
       .then(newCard => {

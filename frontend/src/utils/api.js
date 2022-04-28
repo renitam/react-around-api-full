@@ -23,13 +23,10 @@ class Api {
   }
 
   // 1 Load user info from server
-  getProfileInfo(id) {
+  getProfileInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
-      headers: this._headers,
-      params: {
-        _id: id
-      }
+      headers: this._headers
     })
       .then(res => this._checkServerCode(res))
   }
@@ -37,7 +34,7 @@ class Api {
   // 2 Load cards from server
   getCards() {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: this._headers
+      headers: this._headers, 
     })
       .then(res => this._checkServerCode(res))
   }

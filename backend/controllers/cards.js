@@ -9,9 +9,13 @@ const sendCard = (res, card) => res.send({ data: card });
 // Send all cards in db
 const getCards = (req, res, next) => {
   Card.find({})
-    .orFail(() => new NotFoundError('No cards available'))
-    .then((card) => sendCard(res, card))
-    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
+    .then((card) => {
+      if (card) {
+        return sendCard(res, card)
+      }
+      throw new NotFoundError('No cards available')
+    })
+    .catch(next);
 };
 
 // Create card using card name and link
@@ -21,9 +25,9 @@ const createCard = (req, res, next) => {
     .then((card) => sendCard(res, card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new BadRequestError(`${err.message}`))
+        throw new BadRequestError(`${err}`)
       } else {
-        next(new ServerError(`An error has occurred on the server. ${err}`));
+        throw new ServerError(`An error has occurred on the server. ${err}`);
       }
     });
 };
@@ -32,30 +36,37 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { id } = req.params.cardId;
   Card.findById(id)
-    .orFail(() => next(new NotFoundError(`No card found with this id: ${req.params.cardId}`)))
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`)
+      }
       // If the requester doesn't own the card, reject request
       if (req.user._id !== card.owner._id) {
-        return next(new UnauthorizedError('You cannot delete a card you don\'t own'))
+        throw new UnauthorizedError('You cannot delete a card you don\'t own')
       // Otherwise, delete the card and return the result.
       } else {
         Card.deleteOne(card)
           .then((card) => sendCard(res, card))
       }
     })
-    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
+    .catch(next);
 };
 
 // like card matching req ID
 const likeCard = (req, res, next) => {
+  console.log("Like card ran: ", req.params)
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => next(new NotFoundError(`No card found with this id: ${req.params.cardId}`)))
-    .then((card) => sendCard(res, card))
-    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`)
+      }
+      sendCard(res, card)
+    })
+    .catch(next);
 };
 
 // dislike card matching req ID
@@ -66,7 +77,12 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => next(new NotFoundError(`No card found with this id: ${req.params.cardId}`)))
-    .then((card) => sendCard(res, card))
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`)
+      }
+      sendCard(res, card)
+    })
     .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
 };
 
