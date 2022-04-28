@@ -12,6 +12,10 @@ class Api {
   updateAuthToken(token, id) {
     this._authToken = `Bearer ${token}`
     this._id = id
+    this._headers = {
+      'Authorization': this._authToken,
+      'Content-Type': this._contentType,
+    }
   }
 
   _checkServerCode(res) {

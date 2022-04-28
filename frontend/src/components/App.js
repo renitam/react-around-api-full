@@ -40,7 +40,7 @@ function App() {
     if (isLoggedIn && window.location.pathname === '/') {
       api.getProfileInfo()
         .then((info) => {
-          setCurrentUser(info)
+          setCurrentUser(info.data)
         })
         .catch(err => console.error(`Unable to load profile info: ${err}`))
     }
@@ -82,7 +82,7 @@ function App() {
         })
     }
     return
-  }, [history])
+  }, [])
 
   // Check token upon loading any page
   React.useEffect(() => {
@@ -105,11 +105,6 @@ function App() {
   function onRegister(email, password) {
     auth.register(email, password)
       .then(res => {
-        // For Project 15 -- Add new user id to currentUser context
-        // Note to self: may need a default avatar and name for project 15 on backend, or more signup fields.
-        // const newUser = currentUser
-        // newUser._id = res._id
-
         // set email then redirect to login page with email filled out
         setEmail(res.data.email)
         setToolTipStatus(registrationStatuses[0])
@@ -129,6 +124,7 @@ function App() {
     setEmail('')
     setCurrentUser({})
     setIsLoggedIn(false)
+    api.updateAuthToken('', '');
     history.push('/signin')
   }
 
@@ -146,7 +142,7 @@ function App() {
   function handleUpdateUser(userInfo) {
     api.saveProfile(userInfo)
       .then(data => {
-        setCurrentUser(data)
+        setCurrentUser(data.data)
       })
       .then(() => setIsEditProfileOpen(false))
       .catch(err => console.error(`Unable to save profile: ${err}`))
@@ -156,7 +152,7 @@ function App() {
   function handleUpdateAvatar({ avatar }) {
     api.saveAvatar(avatar)
       .then(data => {
-        setCurrentUser(data)
+        setCurrentUser(data.data)
       })
       .then(() => setIsEditAvatarOpen(false))
       .catch(err => console.error(`Unable to save avatar: ${err}`))
@@ -177,7 +173,7 @@ function App() {
   function handleAddPlaceSubmit({ name, link }) {
     api.addCard({ name, link })
       .then(newCard => {
-        setCardList([newCard, ...cardList])
+        setCardList([newCard.data, ...cardList])
         setIsAddPlaceOpen(false)
       })
       .catch(err => console.error(`Unable to add card: ${err}. Check link and try again.`))
@@ -185,13 +181,11 @@ function App() {
 
   // Send a card like to server, then replace with modified card in card list
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id)
-    console.log(card.first()._id, currentUser)
-    debugger;
+    const isLiked = card.likes.some(i => i === currentUser._id)
 
     api.changeLikeCardStatus(card._id, !isLiked)
       .then(newCard => {
-        setCardList((state) => state.map((c) => c._id === card._id ? newCard : c))
+        setCardList((state) => state.map((c) => c._id === card._id ? newCard.data : c))
       })
       .catch(err => console.error(`Unable to update like status: ${err}`))
   }

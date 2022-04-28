@@ -12,12 +12,11 @@ function Main(props) {
     <main>
       <section className='profile'>
         <div className='profile__content'>
-          <div className='profile__avatar-overlay'>
+          <div className='profile__avatar-overlay' onClick={onEditAvatarClick}>
             <img
               src={currentUser.avatar}
               alt='Profile avatar'
               className='profile__avatar'
-              onClick={onEditAvatarClick}
             />
           </div>
           <div className='profile__info'>
