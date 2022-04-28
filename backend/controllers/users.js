@@ -43,7 +43,6 @@ const createUser = (req, res, next) => {
 
 // POST /signin
 const login = (req, res, next) => {
-  console.log(req)
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -60,23 +59,19 @@ const login = (req, res, next) => {
     .catch(next);
 }
 
-// GET /users -- deprecated from around-express
-// const getUsers = (req, res, next) => {
-//   User.find({})
-//     .orFail(() => next(new NotFoundError('No users available')))
-//     .then((user) => sendUser(res, user))
-//     .catch(next);
-// };
-
 // GET /users/me -- retrieves
 const getProfile = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(() => new NotFoundError(`No user found with this id: '${req.user.id}'`))
-    .then((user) => sendUser(res, user))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(`No user found with this id: '${req.user._id}'`)
+      }
+      sendUser(res, user)
+    })
     .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -86,8 +81,12 @@ const updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.user._id}'`)))
-    .then((user) => sendUser(res, user))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(`No user found with this id: '${req.user._id}'`)
+      }
+      sendUser(res, user)
+    })
     .catch(next);
 };
 
@@ -102,8 +101,12 @@ const updateProfile = (req, res, next) => {
       runValidators: true,
     },
   )
-    .orFail(() => next(new NotFoundError(`No user found with this id: '${req.user._id}'`)))
-    .then((user) => sendUser(res, user))
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(`No user found with this id: '${req.user._id}'`)
+      }
+      sendUser(res, user)
+    })
     .catch(next);
 };
 
