@@ -5,7 +5,7 @@ function checkServerCode(res) {
   if (res.ok) {
     return res.json()
   }
-  return Promise.reject(`Error: server code`)
+  return Promise.reject(res)
 }
 
 // Register user, return id & email for sign-in and loading page

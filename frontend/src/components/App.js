@@ -42,7 +42,7 @@ function App() {
         .then((info) => {
           setCurrentUser(info.data)
         })
-        .catch(err => console.error(`Unable to load profile info: ${err}`))
+        .catch(err => console.error(`Unable to load profile info: ${err.message}`))
     }
   }, [isLoggedIn])
 
@@ -53,7 +53,7 @@ function App() {
         .then((initialCards) => {
           setCardList([...initialCards.data])
         })
-        .catch(err => console.error(`Unable to load cards: ${err}`))
+        .catch(err => console.error(`Unable to load cards: ${err.message}`))
     }
   }, [isLoggedIn])
 
@@ -77,7 +77,7 @@ function App() {
           return Promise.reject(`Token expired. Please sign in again.`)
         })
         .catch(err => {
-          console.error(`An error occurred during authentication: ${err}`)
+          console.error(`An error occurred during authentication: ${err.message}`)
           onSignOut()
         })
     }
@@ -98,7 +98,10 @@ function App() {
         localStorage.setItem('token', token)
         handleToken()
       })
-      .catch(err => console.error(`An error occurred during login: ${err}`))
+      .catch(err => {
+        console.log(err)
+        console.error(`An error occurred during login: ${err.message}`)
+      })
   }
 
   // Handle register submit
@@ -113,7 +116,7 @@ function App() {
       })
       .catch(err => {
         setToolTipStatus(registrationStatuses[1])
-        console.error(`An error occurred during signup: ${err}`)
+        console.error(`An error occurred during signup: ${err.message}`)
       })
       .finally(() => setIsInfoToolTipOpen(true))
   }
@@ -145,7 +148,7 @@ function App() {
         setCurrentUser(data.data)
       })
       .then(() => setIsEditProfileOpen(false))
-      .catch(err => console.error(`Unable to save profile: ${err}`))
+      .catch(err => console.error(`Unable to save profile: ${err.message}`))
   }
 
   // Send new avatar to server then close modal
@@ -155,7 +158,7 @@ function App() {
         setCurrentUser(data.data)
       })
       .then(() => setIsEditAvatarOpen(false))
-      .catch(err => console.error(`Unable to save avatar: ${err}`))
+      .catch(err => console.error(`Unable to save avatar: ${err.message}`))
   }
 
   // Open preview modal for selected card
@@ -176,7 +179,7 @@ function App() {
         setCardList([newCard.data, ...cardList])
         setIsAddPlaceOpen(false)
       })
-      .catch(err => console.error(`Unable to add card: ${err}. Check link and try again.`))
+      .catch(err => console.error(`Unable to add card: ${err.message}. Check link and try again.`))
   }
 
   // Send a card like to server, then replace with modified card in card list
@@ -187,7 +190,7 @@ function App() {
       .then(newCard => {
         setCardList((state) => state.map((c) => c._id === card._id ? newCard.data : c))
       })
-      .catch(err => console.error(`Unable to update like status: ${err}`))
+      .catch(err => console.error(`Unable to update like status: ${err.message}`))
   }
 
   // Delete a card from server, then remove from card list and close trash modal
@@ -196,7 +199,7 @@ function App() {
       .then(() => setCardList( cardList.filter(cards => cards._id !== selectedCard._id) ))
       .then(() => setSelectedCard({}))
       .then(() => setIsConfirmTrashOpen(false))
-      .catch(err => console.error(`Unable to delete card: ${err}`))
+      .catch(err => console.error(`Unable to delete card: ${err.message}`))
   }
 
   // Open trash modal for selected card
