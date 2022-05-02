@@ -52,17 +52,15 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      if (user) {
-        const token = jwt.sign(
-          { _id: user._id },
-          JWT_SECRET,
-          { expiresIn: '7d' },
-        );
-        res.send({
-          data: { _id: user._id },
-          token,
-        });
-      };
+      const token = jwt.sign(
+        { _id: user._id },
+        JWT_SECRET,
+        { expiresIn: '7d' },
+      );
+      res.send({
+        data: { _id: user._id },
+        token,
+      });
     })
     .catch(next);
 };
