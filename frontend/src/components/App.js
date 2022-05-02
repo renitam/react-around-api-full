@@ -57,11 +57,6 @@ function App() {
     }
   }, [isLoggedIn])
 
-  function loadApp() {
-    setIsLoggedIn(true)
-    history.push('/')
-  }
-
   // Check token and log user in if valid
   const handleToken = React.useCallback(() => {
     const token = localStorage.getItem('token')
@@ -71,7 +66,8 @@ function App() {
           if (res.data.email) {
             setEmail(res.data.email)
             api.updateAuthToken(token, currentUser._id);
-            loadApp()
+            setIsLoggedIn(true)
+            history.push('/')
             return
           }
           return Promise.reject(`Token expired. Please sign in again.`)
@@ -91,6 +87,7 @@ function App() {
 
   // Handle login submit 
   function onLogin(email, password) {
+    console.log(email, password)
     auth.login(email, password)
       .then(res => {
         // response returns data: _id; and token

@@ -52,6 +52,9 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
+      if (!user) {
+        throw new BadRequestError('Invalid email or password')
+      }
       const token = jwt.sign(
         { _id: user._id },
         JWT_SECRET,

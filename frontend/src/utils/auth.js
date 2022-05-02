@@ -22,6 +22,7 @@ export const register = (email, password) => {
 
 // Log in with email password, return auth token
 export const login = (email, password) => {
+  console.log(email, password)
   return fetch(`${baseUrl}/signin`, {
     method: 'POST',
     headers: {
