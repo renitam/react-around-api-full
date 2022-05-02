@@ -8,6 +8,7 @@ const cors = require('cors');
 const routes = require('./routes/routes');
 const { createUser, login } = require('./controllers/users');
 const { validateUser, validateLogin, validateHeader } = require('./middleware/validation');
+const auth = require('./middleware/auth');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const { DB_ADDRESS } = require('./utils/config');
