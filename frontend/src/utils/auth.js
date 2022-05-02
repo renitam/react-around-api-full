@@ -1,10 +1,12 @@
 // Register user and return email and owner ID
 const baseUrl= 'https://api.renita.students.nomoreparties.sbs' 
 
-function checkServerCode(res) {
+async function checkServerCode(res) {
   if (res.ok) {
     return res.json()
   }
+  const err = await res.json()
+  Promise.reject(err.message)
 }
 
 // Register user, return id & email for sign-in and loading page
@@ -17,12 +19,10 @@ export const register = (email, password) => {
     body: JSON.stringify({ email, password })
   })
     .then(res => checkServerCode(res))
-    .catch(err => err)
 }
 
 // Log in with email password, return auth token
 export const login = (email, password) => {
-  console.log(email, password)
   return fetch(`${baseUrl}/signin`, {
     method: 'POST',
     headers: {
@@ -31,7 +31,6 @@ export const login = (email, password) => {
     body: JSON.stringify({ email, password })
   })
     .then(res => checkServerCode(res))
-    .catch(err => err)
 }
 
 // Check login token upon visiting page and return id & email for loading page
@@ -47,5 +46,4 @@ export const checkToken = (token, id) => {
     }
   })
     .then(res => checkServerCode(res))
-    .catch(err => err)
 }

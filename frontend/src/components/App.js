@@ -63,6 +63,7 @@ function App() {
     if (token) {
       return auth.checkToken(token, currentUser._id)
         .then(res => {
+          console.log(res)
           if (res.data.email) {
             setEmail(res.data.email)
             api.updateAuthToken(token, currentUser._id);
@@ -91,9 +92,12 @@ function App() {
     auth.login(email, password)
       .then(res => {
         // response returns data: _id; and token
-        const token = res.token
-        localStorage.setItem('token', token)
-        handleToken()
+        console.log(res === true)
+        if (res) {
+          const token = res.token
+          localStorage.setItem('token', token)
+          handleToken()
+        }
       })
       .catch(err => {
         console.error(`An error occurred during login: ${err}`)
