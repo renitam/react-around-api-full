@@ -7,8 +7,7 @@ const cors = require('cors');
 // Pull in middleware and constants
 const routes = require('./routes/routes');
 const { createUser, login } = require('./controllers/users');
-const { validateUser, validateLogin, validateHeader } = require('./middleware/validation');
-const auth = require('./middleware/auth');
+const { validateUser, validateLogin } = require('./middleware/validation');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const { DB_ADDRESS } = require('./utils/config');
@@ -43,8 +42,6 @@ app.use(requestLogger); // enable request logger
 app.post('/signup', validateUser, createUser);
 app.post('/signin', validateLogin, login);
 
-// protect remaining routes & define user._id for authorized user
-app.use(validateHeader, auth);
 app.use(routes); // define user & card route middleware
 
 app.use(errorLogger); // enable error logger

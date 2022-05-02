@@ -5,8 +5,6 @@ function checkServerCode(res) {
   if (res.ok) {
     return res.json()
   }
-  console.log(res)
-  return Promise.reject(`Error: ${res.err}`)
 }
 
 // Register user, return id & email for sign-in and loading page
@@ -19,6 +17,7 @@ export const register = (email, password) => {
     body: JSON.stringify({ email, password })
   })
     .then(res => checkServerCode(res))
+    .catch(err => err)
 }
 
 // Log in with email password, return auth token
@@ -31,6 +30,7 @@ export const login = (email, password) => {
     body: JSON.stringify({ email, password })
   })
     .then(res => checkServerCode(res))
+    .catch(err => err)
 }
 
 // Check login token upon visiting page and return id & email for loading page
@@ -46,4 +46,5 @@ export const checkToken = (token, id) => {
     }
   })
     .then(res => checkServerCode(res))
+    .catch(err => err)
 }

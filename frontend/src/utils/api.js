@@ -22,8 +22,6 @@ class Api {
     if (res.ok) {
       return res.json()
     }
-
-    return Promise.reject(`Error: ${res.status}`)
   }
 
   // 1 Load user info from server
@@ -33,6 +31,7 @@ class Api {
       headers: this._headers
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 2 Load cards from server
@@ -41,6 +40,7 @@ class Api {
       headers: this._headers, 
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 3 Edit profile info
@@ -54,6 +54,7 @@ class Api {
       })
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 9 Update profile pic in server
@@ -66,6 +67,7 @@ class Api {
       })
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 4 Add new card to server
@@ -79,6 +81,7 @@ class Api {
       })
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 7 Delete card from server
@@ -88,6 +91,7 @@ class Api {
       headers: this._headers,
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 8A Add like to card
@@ -97,6 +101,7 @@ class Api {
       headers: this._headers,
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // 8B Remove like from card
@@ -106,6 +111,7 @@ class Api {
       headers: this._headers,
     })
       .then(res => this._checkServerCode(res))
+      .catch(err => err)
   }
 
   // Check user's card like status and toggle
