@@ -1,11 +1,11 @@
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Define and import helper functions/constants
+const User = require('../models/user');
 const { JWT_SECRET } = require('../utils/config');
 
-const UnauthorizedError = require('../errors/unauthorized-err');
+// const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
 const BadRequestError = require('../errors/bad-request-err');
 const NotFoundError = require('../errors/not-found-err');
@@ -21,24 +21,30 @@ const createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new ConflictError(`Email already exists: ${email}.`);
+        throw new ConflictError(`Email already exists: ${email}`);
       } else {
-        return bcrypt.hash(password, 10)
+        return bcrypt.hash(password, 10);
       }
     })
     .then((hash) => User.create({
       email,
-      password: hash
+      password: hash,
     }))
     .then((user) => {
       res.status(201).send({
         data: {
-        _id: user._id,
-        email: user.email,
-        }
-      })
+          _id: user._id,
+          email: user.email,
+        },
+      });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError(`Invalid email or password: ${err.message}`));
+      } else {
+        next(err);
+      }
+    });
 };
 
 // POST /signin
@@ -53,20 +59,20 @@ const login = (req, res, next) => {
       );
       res.send({
         data: { _id: user._id },
-        token
+        token,
       });
     })
     .catch(next);
-}
+};
 
 // GET /users/me -- retrieves
 const getProfile = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError(`No user found with this id: '${req.user._id}'`)
+        throw new NotFoundError(`No user found with this id: '${req.user._id}'`);
       }
-      sendUser(res, user)
+      sendUser(res, user);
     })
     .catch(next);
 };
@@ -83,9 +89,9 @@ const updateAvatar = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        throw new NotFoundError(`No user found with this id: '${req.user._id}'`)
+        throw new NotFoundError(`No user found with this id: '${req.user._id}'`);
       }
-      sendUser(res, user)
+      sendUser(res, user);
     })
     .catch(next);
 };
@@ -103,9 +109,9 @@ const updateProfile = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        throw new NotFoundError(`No user found with this id: '${req.user._id}'`)
+        throw new NotFoundError(`No user found with this id: '${req.user._id}'`);
       }
-      sendUser(res, user)
+      sendUser(res, user);
     })
     .catch(next);
 };

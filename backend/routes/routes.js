@@ -4,7 +4,6 @@ const userRouter = require('./users');
 const cardRouter = require('./cards');
 
 const auth = require('../middleware/auth');
-const { validateHeader } = require('../middleware/validation');
 
 router.use(auth);
 router.use('/users', userRouter);

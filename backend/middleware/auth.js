@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
 
   // make sure the header exists and has valid token
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return next(new UnauthorizedError('Authorization Required'));
+    throw new UnauthorizedError('Authorization Required');
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return next(new UnauthorizedError('Token invalid'));
+    throw new UnauthorizedError('Token invalid');
   }
 
   // assign payload w/ _id to req object to send to next middleware

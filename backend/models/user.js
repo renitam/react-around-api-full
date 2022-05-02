@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function findUserByCredentials (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       // If email doesn't match,
@@ -68,17 +68,17 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials (email
           if (!matched) {
             throw new BadRequestError('Incorrect email or password');
           }
-        // Otherwise return user object
-        return user.removePass()
-      })
+          // Otherwise return user object
+          return user.removePass();
+        });
     });
 };
 
 // Define removePass method to remove password before turning obj
-userSchema.methods.removePass = function () {
+userSchema.methods.removePass = function removePass() {
   const obj = this.toObject();
   delete obj.password;
   return obj;
-}
+};
 
 module.exports = mongoose.model('user', userSchema);

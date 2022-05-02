@@ -11,9 +11,9 @@ const getCards = (req, res, next) => {
   Card.find({})
     .then((card) => {
       if (card) {
-        return sendCard(res, card)
+        return sendCard(res, card);
       }
-      throw new NotFoundError('No cards available')
+      throw new NotFoundError('No cards available');
     })
     .catch(next);
 };
@@ -24,10 +24,10 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => sendCard(res, card))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        throw new BadRequestError(`${err}`)
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError(`An error occurred during validation: ${err.message}`);
       } else {
-        throw new ServerError(`An error has occurred on the server. ${err}`);
+        throw new ServerError(`An error has occurred on the server: ${err.message}`);
       }
     });
 };
@@ -38,15 +38,15 @@ const deleteCard = (req, res, next) => {
   Card.findById(id)
     .then((card) => {
       if (!card) {
-        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`)
+        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`);
       }
       // If the requester doesn't own the card, reject request
       if (req.user._id !== card.owner._id) {
-        throw new UnauthorizedError('You cannot delete a card you don\'t own')
+        throw new UnauthorizedError('You cannot delete a card you don\'t own');
       // Otherwise, delete the card and return the result.
       } else {
         Card.deleteOne(card)
-          .then((card) => sendCard(res, card))
+          .then((deletedCard) => sendCard(res, deletedCard));
       }
     })
     .catch(next);
@@ -54,7 +54,6 @@ const deleteCard = (req, res, next) => {
 
 // like card matching req ID
 const likeCard = (req, res, next) => {
-  console.log("Like card ran: ", req.params)
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -62,9 +61,9 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`)
+        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`);
       }
-      sendCard(res, card)
+      sendCard(res, card);
     })
     .catch(next);
 };
@@ -79,11 +78,11 @@ const dislikeCard = (req, res, next) => {
     .orFail(() => next(new NotFoundError(`No card found with this id: ${req.params.cardId}`)))
     .then((card) => {
       if (!card) {
-        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`)
+        throw new NotFoundError(`No card found with this id: ${req.params.cardId}`);
       }
-      sendCard(res, card)
+      sendCard(res, card);
     })
-    .catch((err) => next(new ServerError(`An error has occurred on the server. ${err}`)));
+    .catch(next);
 };
 
 module.exports = {
