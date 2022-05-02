@@ -52,7 +52,7 @@ app.use(errors()); // error handlers for celebrate
 // api generated errors
 app.use((err, req, res, next) => {
   if (err.statusCode !== 500) {
-    res.status(err.statusCode || 500).send({ message: err.message || `An error occurred on the server: ${err.message}` });
+    res.status(err.statusCode || 500).send({ message: `An error occurred on the server: ${err.message}` });
   } else {
     const serverErr = new ServerError(`An error occurred on the server: ${err.message}`);
     res.status(serverErr.statusCode).send({ message: serverErr.message });
