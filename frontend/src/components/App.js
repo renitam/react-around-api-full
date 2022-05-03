@@ -61,12 +61,12 @@ function App() {
   const handleToken = React.useCallback(() => {
     const token = localStorage.getItem('token')
     if (token) {
-      return auth.checkToken(token, currentUser._id)
+      return auth.checkToken(token)
         .then(res => {
           console.log(res)
           if (res.data.email) {
             setEmail(res.data.email)
-            api.updateAuthToken(token, currentUser._id);
+            api.updateAuthToken(token);
             setIsLoggedIn(true)
             history.push('/')
             return
@@ -78,7 +78,6 @@ function App() {
           onSignOut()
         })
     }
-    return
   }, [])
 
   // Check token upon loading any page
@@ -88,14 +87,13 @@ function App() {
 
   // Handle login submit 
   function onLogin(email, password) {
-    console.log(email, password)
     auth.login(email, password)
       .then(res => {
         // response returns data: _id; and token
-        console.log(res === true)
         if (res) {
           const token = res.token
           localStorage.setItem('token', token)
+          setCurrentUser({ _id: res.data._id })
           handleToken()
         }
       })

@@ -6,7 +6,7 @@ async function checkServerCode(res) {
     return res.json()
   }
   const err = await res.json()
-  Promise.reject(err.message)
+  return Promise.reject(err.message)
 }
 
 // Register user, return id & email for sign-in and loading page
@@ -34,15 +34,12 @@ export const login = (email, password) => {
 }
 
 // Check login token upon visiting page and return id & email for loading page
-export const checkToken = (token, id) => {
+export const checkToken = (token) => {
   return fetch(`${baseUrl}/users/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
-    },
-    params: {
-      _id: id
     }
   })
     .then(res => checkServerCode(res))
