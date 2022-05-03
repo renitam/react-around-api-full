@@ -35,7 +35,6 @@ export const login = (email, password) => {
 
 // Check login token upon visiting page and return id & email for loading page
 export const checkToken = (token) => {
-  console.log(token)
   return fetch(`${baseUrl}/users/me`, {
     method: 'GET',
     headers: {
