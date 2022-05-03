@@ -60,7 +60,7 @@ const login = (req, res, next) => {
       res.send({
         data: {
           _id: user._id,
-          email: user.email
+          email: user.email,
         },
         token,
       });
