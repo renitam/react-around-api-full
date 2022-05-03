@@ -106,7 +106,7 @@ const validateHeader = celebrate({
     authorization: Joi.string().required().messages({
       'string.empty': 'Authorization required',
     }),
-  }).unknown(true),
+  }),
 });
 
 module.exports = {
