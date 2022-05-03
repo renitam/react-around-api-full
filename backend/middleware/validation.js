@@ -101,6 +101,14 @@ const validateCardId = celebrate({
   },
 });
 
+const validateHeader = celebrate({
+  headers: Joi.object().keys({
+    Authorization: Joi.string().required().messages({
+      'string.empty': 'Authorization required',
+    }),
+  }).unknown(true),
+});
+
 module.exports = {
   validateUser,
   validateLogin,
@@ -108,4 +116,5 @@ module.exports = {
   validateAvatar,
   validateCard,
   validateCardId,
+  validateHeader,
 };
