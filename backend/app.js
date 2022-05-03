@@ -43,7 +43,7 @@ app.post('/signup', validateUser, createUser);
 app.post('/signin', validateLogin, login);
 
 const auth = require('./middleware/auth');
-app.use(auth);
+app.use(validateHeader, auth);
 
 app.use(routes); // define user & card route middleware
 
